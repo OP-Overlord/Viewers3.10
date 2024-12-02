@@ -131,7 +131,11 @@ class ImageSet {
 }
 
 function _getImagePositionPatient(image) {
-  return image.getData().metadata.ImagePositionPatient;
+  let imagePositionPatient = image.getData().metadata.ImagePositionPatient;
+
+  if (!imagePositionPatient) imagePositionPatient = '0\\0\\0';
+
+  return imagePositionPatient;
 }
 
 function _getImageOrientationPatient(image) {

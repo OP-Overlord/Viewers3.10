@@ -12,7 +12,7 @@ import classNames from 'classnames';
 
 type DicomUploadProgressProps = {
   dicomFileUploaderArr: DicomFileUploader[];
-  onComplete: () => void;
+
 };
 
 const ONE_SECOND = 1000;
@@ -37,7 +37,7 @@ const NO_WRAP_ELLIPSIS_CLASS_NAMES = 'text-ellipsis whitespace-nowrap overflow-h
 
 function DicomUploadProgress({
   dicomFileUploaderArr,
-  onComplete,
+
 }: DicomUploadProgressProps): ReactElement {
   const [totalUploadSize] = useState(
     dicomFileUploaderArr.reduce((acc, fileUploader) => acc + fileUploader.getFileSize(), 0)
@@ -222,16 +222,16 @@ function DicomUploadProgress({
 
     if (timeRemaining < ONE_MINUTE) {
       const secondsRemaining = Math.ceil(timeRemaining / ONE_SECOND);
-      return `${secondsRemaining} ${secondsRemaining === 1 ? 'second' : 'seconds'}`;
+      return `${secondsRemaining} ${secondsRemaining === 1 ? 'segundo' : 'segundos'}`;
     }
 
     if (timeRemaining < ONE_HOUR) {
       const minutesRemaining = Math.ceil(timeRemaining / ONE_MINUTE);
-      return `${minutesRemaining} ${minutesRemaining === 1 ? 'minute' : 'minutes'}`;
+      return `${minutesRemaining} ${minutesRemaining === 1 ? 'minuto' : 'minutos'}`;
     }
 
     const hoursRemaining = Math.ceil(timeRemaining / ONE_HOUR);
-    return `${hoursRemaining} ${hoursRemaining === 1 ? 'hour' : 'hours'}`;
+    return `${hoursRemaining} ${hoursRemaining === 1 ? 'hora' : 'horas'}`;
   }, [timeRemaining]);
 
   const getPercentCompleteRounded = useCallback(
@@ -271,15 +271,8 @@ function DicomUploadProgress({
         {numFilesCompleted === dicomFileUploaderArr.length ? (
           <>
             <span className={NO_WRAP_ELLIPSIS_CLASS_NAMES}>{`${dicomFileUploaderArr.length} ${
-              dicomFileUploaderArr.length > 1 ? 'files' : 'file'
-            } completed.`}</span>
-            <Button
-              disabled={false}
-              className="ml-auto"
-              onClick={onComplete}
-            >
-              {'Close'}
-            </Button>
+              dicomFileUploaderArr.length > 1 ? 'archivos completados' : 'archivo completado'
+            } `}</span>
           </>
         ) : (
           <>
@@ -287,11 +280,11 @@ function DicomUploadProgress({
               style={getNofMFilesStyle()}
               className={classNames(NO_WRAP_ELLIPSIS_CLASS_NAMES, 'text-end')}
             >
-              {`${numFilesCompleted} of ${dicomFileUploaderArr.length}`}&nbsp;
+              {`${numFilesCompleted} de ${dicomFileUploaderArr.length}`}&nbsp;
             </span>
-            <span className={NO_WRAP_ELLIPSIS_CLASS_NAMES}>{' files completed.'}&nbsp;</span>
+            <span className={NO_WRAP_ELLIPSIS_CLASS_NAMES}>{' archivos completados.'}&nbsp;</span>
             <span className={NO_WRAP_ELLIPSIS_CLASS_NAMES}>
-              {timeRemaining ? `Less than ${getFormattedTimeRemaining()} remaining. ` : ''}
+              {timeRemaining ? `Menos de ${getFormattedTimeRemaining()} para terminar. ` : ''}
             </span>
             <span
               className={classNames(
@@ -300,7 +293,7 @@ function DicomUploadProgress({
               )}
               onClick={cancelAllUploads}
             >
-              Cancel All Uploads
+              Cancelar todo
             </span>
           </>
         )}
@@ -331,8 +324,8 @@ function DicomUploadProgress({
             <>
               <div className="text-primary-light text-xl">
                 {numFails > 0
-                  ? `Completed with ${numFails} ${numFails > 1 ? 'errors' : 'error'}!`
-                  : 'Completed!'}
+                  ? `Completado con ${numFails} ${numFails > 1 ? 'errores' : 'error'}!`
+                  : 'Completado!'}
               </div>
               {getShowFailedOnlyIconComponent()}
             </>
@@ -382,7 +375,7 @@ function DicomUploadProgress({
 
 DicomUploadProgress.propTypes = {
   dicomFileUploaderArr: PropTypes.arrayOf(PropTypes.instanceOf(DicomFileUploader)).isRequired,
-  onComplete: PropTypes.func.isRequired,
+
 };
 
 export default DicomUploadProgress;

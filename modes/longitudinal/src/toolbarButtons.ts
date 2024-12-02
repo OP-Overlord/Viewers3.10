@@ -42,6 +42,23 @@ const toolbarButtons: Button[] = [
           evaluate: 'evaluate.cornerstoneTool',
         }),
         createButton({
+          id: 'Angle',
+          icon: 'tool-angle',
+          label: 'Angle',
+          tooltip: 'Angle',
+          commands: setToolActiveToolbar,
+          evaluate: 'evaluate.cornerstoneTool',
+        }),
+        createButton({
+          id: 'CobbAngle',
+          icon: 'icon-tool-cobb-angle',
+          label: 'Cobb Angle',
+          tooltip: 'Cobb Angle',
+          commands: setToolActiveToolbar,
+          evaluate: 'evaluate.cornerstoneTool',
+        }),
+
+        createButton({
           id: 'Bidirectional',
           icon: 'tool-bidirectional',
           label: 'Bidirectional',

@@ -504,7 +504,7 @@ function WorkList({
   const uploadProps =
     DicomUploadComponent && dataSource.getConfig()?.dicomUploadEnabled
       ? {
-          title: 'Upload files',
+          title: 'Cargar archivos',
           closeButton: true,
           shouldCloseOnEsc: false,
           shouldCloseOnOverlayClick: false,

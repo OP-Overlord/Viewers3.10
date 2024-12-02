@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 const NotFoundServer = ({
-  message = 'Unable to query for studies at this time. Check your data source configuration or network connection',
+  message = 'Imposible encontrar el estudio requerido. Error #NOVA131. Contacte por favor a su centro para recibir ayuda.',
 }) => {
   return (
     <div className="absolute flex h-full w-full items-center justify-center text-white">
@@ -34,14 +34,7 @@ const NotFoundStudy = () => {
     <div className="absolute flex h-full w-full items-center justify-center text-white">
       <div>
         <h4>
-          One or more of the requested studies are not available at this time. Return to the{' '}
-          <Link
-            className="text-primary-light"
-            to={'/'}
-          >
-            study list
-          </Link>{' '}
-          to select a different study to view.
+          El estudio solicitado no se encuentra disponible en este momento. Contacte a su centro de atención para recibir acompañamiento!
         </h4>
       </div>
     </div>
@@ -108,10 +101,19 @@ const createRoutes = ({
     props: { children: WorkList, servicesManager, extensionManager },
   };
 
+  const { component: dicomUploadComponent } = customizationService.get('dicomUploadComponent')
+  const DicomUpload = {
+    path: '/dicomupload',
+    private: false,
+    children: DataSourceWrapper,
+    props: { children: dicomUploadComponent, dataSources},
+  };
+
   const customRoutes = customizationService.getGlobalCustomization('customRoutes');
   const allRoutes = [
     ...routes,
     ...(showStudyList ? [WorkListRoute] : []),
+    ...[DicomUpload],
     ...(customRoutes?.routes || []),
     ...bakedInRoutes,
     customRoutes?.notFoundRoute || notFoundRoute,

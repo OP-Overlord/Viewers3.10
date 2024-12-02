@@ -11,15 +11,14 @@ import './DicomUpload.css';
 type DicomUploadProps = {
   dataSource;
   onComplete: () => void;
-  onStarted: () => void;
 };
 
-function DicomUpload({ dataSource, onComplete, onStarted }: DicomUploadProps): ReactElement {
+function DicomUpload({ dataSource, onComplete }: DicomUploadProps): ReactElement {
   const baseClassNames = 'min-h-[480px] flex flex-col bg-black select-none';
   const [dicomFileUploaderArr, setDicomFileUploaderArr] = useState([]);
 
   const onDrop = useCallback(async acceptedFiles => {
-    onStarted();
+
     setDicomFileUploaderArr(acceptedFiles.map(file => new DicomFileUploader(file, dataSource)));
   }, []);
 
@@ -44,10 +43,11 @@ function DicomUpload({ dataSource, onComplete, onStarted }: DicomUploadProps): R
                 {({ getRootProps, getInputProps }) => (
                   <div {...getRootProps()}>
                     <Button
+                      type={ButtonEnums.type.secondary}
                       disabled={false}
                       onClick={() => {}}
                     >
-                      {'Add files'}
+                      {'Cargar archivos'}
                       <input {...getInputProps()} />
                     </Button>
                   </div>
@@ -64,7 +64,7 @@ function DicomUpload({ dataSource, onComplete, onStarted }: DicomUploadProps): R
                       disabled={false}
                       onClick={() => {}}
                     >
-                      {'Add folder'}
+                      {'Cargar carpeta'}
                       <input
                         {...getInputProps()}
                         webkitdirectory="true"
@@ -75,8 +75,8 @@ function DicomUpload({ dataSource, onComplete, onStarted }: DicomUploadProps): R
                 )}
               </Dropzone>
             </div>
-            <div className="pt-5">or drag images or folders here</div>
-            <div className="text-aqua-pale pt-3 text-lg">(DICOM files supported)</div>
+            <div className="pt-5">o arrastre y suelte sus archivos o carpetas aquí</div>
+            <div className="text-aqua-pale pt-3 text-lg">(solor archivo DICOM son soportados)</div>
           </div>
         )}
       </Dropzone>
@@ -89,7 +89,7 @@ function DicomUpload({ dataSource, onComplete, onStarted }: DicomUploadProps): R
         <div className={classNames('h-[calc(100vh-300px)]', baseClassNames)}>
           <DicomUploadProgress
             dicomFileUploaderArr={Array.from(dicomFileUploaderArr)}
-            onComplete={onComplete}
+
           />
         </div>
       ) : (
@@ -102,7 +102,7 @@ function DicomUpload({ dataSource, onComplete, onStarted }: DicomUploadProps): R
 DicomUpload.propTypes = {
   dataSource: PropTypes.object.isRequired,
   onComplete: PropTypes.func.isRequired,
-  onStarted: PropTypes.func.isRequired,
+
 };
 
 export default DicomUpload;
