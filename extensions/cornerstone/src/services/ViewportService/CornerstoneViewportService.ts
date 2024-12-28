@@ -605,10 +605,6 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
     let initialImageIndexToUse =
       presentations?.positionPresentation?.initialImageIndex ?? initialImageIndex;
 
-    if (initialImageIndexToUse === undefined || initialImageIndexToUse === null) {
-      initialImageIndexToUse = this._getInitialImageIndexForViewport(viewportInfo, imageIds) || 0;
-    }
-
     const { rotation, flipHorizontal, displayArea } = viewportInfo.getViewportOptions();
 
     const properties = { ...presentations.lutPresentation?.properties };
@@ -637,12 +633,26 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
     });
 
     let imageIdsToSet = imageIds;
-    const res = this._processExtraDisplaySetsForViewport(viewport);
-    imageIdsToSet = res?.imageIds ?? imageIdsToSet;
+    const overlayProcessingResult = this._processExtraDisplaySetsForViewport(viewport);
+    imageIdsToSet = overlayProcessingResult?.imageIds ?? imageIdsToSet;
+
+    const referencedImageId = presentations?.positionPresentation?.viewReference?.referencedImageId;
+    if (referencedImageId) {
+      initialImageIndexToUse = imageIdsToSet.indexOf(referencedImageId);
+    }
+
+    if (initialImageIndexToUse === undefined || initialImageIndexToUse === null) {
+      initialImageIndexToUse = this._getInitialImageIndexForViewport(viewportInfo, imageIds) || 0;
+    }
 
     return viewport.setStack(imageIdsToSet, initialImageIndexToUse).then(() => {
       viewport.setProperties({ ...properties });
       this.setPresentations(viewport.id, presentations, viewportInfo);
+
+      if (overlayProcessingResult?.addOverlayFn) {
+        overlayProcessingResult.addOverlayFn();
+      }
+
       if (displayArea) {
         viewport.setDisplayArea(displayArea);
       }
@@ -827,9 +837,13 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
     });
 
     // For SEG and RT viewports
-    this._processExtraDisplaySetsForViewport(viewport);
+    const { addOverlayFn } = this._processExtraDisplaySetsForViewport(viewport) || {};
 
     await viewport.setVolumes(volumeInputArray);
+
+    if (addOverlayFn) {
+      addOverlayFn();
+    }
 
     volumesProperties.forEach(({ properties, volumeId }) => {
       viewport.setProperties(properties, volumeId);
@@ -880,8 +894,12 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
       segOrRTSOverlayDisplaySet.referencedDisplaySetInstanceUID
     );
     const imageIds = referenceDisplaySet.images.map(image => image.imageId);
-    this.addOverlayRepresentationForDisplaySet(segOrRTSOverlayDisplaySet, viewport);
-    return { imageIds };
+
+    return {
+      imageIds,
+      addOverlayFn: () =>
+        this.addOverlayRepresentationForDisplaySet(segOrRTSOverlayDisplaySet, viewport),
+    };
   }
 
   private addOverlayRepresentationForDisplaySet(
@@ -1062,7 +1080,7 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
         // During a resize, the slice index should remain unchanged. This is a temporary fix for
         // a larger issue regarding the definition of slice index with slab thickness.
         // We need to revisit this to make it more robust and understandable.
-        delete presentation.viewReference.sliceIndex;
+        delete presentation.viewReference?.sliceIndex;
         this.beforeResizePositionPresentations.set(viewportId, presentation);
       });
 
