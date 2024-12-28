@@ -139,7 +139,11 @@ function _getImagePositionPatient(image) {
 }
 
 function _getImageOrientationPatient(image) {
-  return image.getData().metadata.ImageOrientationPatient;
+  let imageOrientationPatient = image.getData().metadata.ImageOrientationPatient;
+
+  if (!imageOrientationPatient) imageOrientationPatient = '0\\0\\0';
+
+  return imageOrientationPatient;
 }
 
 export default ImageSet;

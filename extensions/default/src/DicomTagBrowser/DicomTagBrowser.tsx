@@ -155,10 +155,10 @@ const DicomTagBrowser = ({ displaySets, displaySetInstanceUID }) => {
           )}
           <div className="ml-auto flex w-1/3 flex-col">
             <span className="text-muted-foreground flex h-6 items-center text-xs">
-              Search metadata
+              Buscar metadata
             </span>
             <InputFilterText
-              placeholder="Search metadata..."
+              placeholder="Buscar en la metadata..."
               onDebounceChange={setFilterValue}
             />
           </div>
